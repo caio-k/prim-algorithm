@@ -55,6 +55,8 @@ void insertEdge(int v1, int v2, double c, TypeGraphs* g) {
 		new2->next = g->adjacentList[v2];
 		g->adjacentList[v2] = new2;
 	}
+	else
+		printf("Could not insert edge (%d, %d).\n", v1, v2);
 }
 
 //executes the prim's algorithm
@@ -128,30 +130,35 @@ int main(int argc, char* argv[]) {
 	
 	//input of datas
 	fileIn = fopen(argv[1], "r");
-	fscanf(fileIn, "%i %i", &nv, &na);
-	initializesGraphs(g, nv, na);
-	
-	i = 0;
-	while (i < na) {
-		fscanf(fileIn, "%i %i %lf", &u, &v, &cost);
-		insertEdge(u, v, cost, g);
-		i++;
+	if (fileIn) {
+		fscanf(fileIn, "%i %i", &nv, &na);
+		initializesGraphs(g, nv, na);
+		
+		i = 0;
+		while (i < na) {
+			fscanf(fileIn, "%i %i %lf", &u, &v, &cost);
+			insertEdge(u, v, cost, g);
+			i++;
+		}
+		
+		fclose(fileIn);
+		
+		
+		//executes the prim's algorithm
+		executesPrim(g);
+		
+		//output of datas
+		fileOut = fopen(argv[2], "w");
+		fprintf(fileOut, "%g\n", g->totalCost);
+		
+		for(i = 1; i < g->numVertex; i++) 
+			fprintf(fileOut, "%d %d\n", g->predecessor[i], i);
+		
+		fclose(fileOut);
 	}
 	
-	fclose(fileIn);
-	
-	
-	//executes the prim's algorithm
-	executesPrim(g);
-	
-	//output of datas
-	fileOut = fopen(argv[2], "w");
-	fprintf(fileOut, "%g\n", g->totalCost);
-	
-	for(i = 1; i < g->numVertex; i++) 
-		fprintf(fileOut, "%d %d\n", g->predecessor[i], i);
-	
-	fclose(fileOut);
+	else 
+		printf("Make sure the files actually exist or are in the right directory.\n");
 
 	return 0;
 }
