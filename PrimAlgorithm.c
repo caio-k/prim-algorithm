@@ -42,7 +42,7 @@ void initializesGraphs(TypeGraphs* g, int nv, int na) {
 
 //insert edges (v1, v2) and (v2, v1) with cost c in the graph g, because the graph is directed
 void insertEdge(int v1, int v2, double c, TypeGraphs* g) {
-	if (v1 >= 0 && v1 < g->numVertex && v2 >= 0 && v2 < g->numVertex) {
+	if (v1 >= 0 && v1 < g->numVertex && v2 >= 0 && v2 < g->numVertex && c < INFINITY) {
 		PEDGE new1 = (PEDGE) malloc(sizeof(TypeEdge));
 		new1->destination_vertex = v2;
 		new1->cost = c;
@@ -55,8 +55,11 @@ void insertEdge(int v1, int v2, double c, TypeGraphs* g) {
 		new2->next = g->adjacentList[v2];
 		g->adjacentList[v2] = new2;
 	}
-	else
-		printf("Could not insert edge (%d, %d).\n", v1, v2);
+	else {
+		printf("Could not insert edge (%d, %d).", v1, v2);
+		if (c >= INFINITY) printf(" %g >= INFINITY.\n", c);
+		else printf(" Invalid vertex.\n");
+	}
 }
 
 //executes the prim's algorithm
